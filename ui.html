@@ -1521,6 +1521,178 @@
             cursor: pointer;
             width: 100%;
         }
+
+        /* 새로운 챗봇 화면 스타일 */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #f8f9fa;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            max-height: calc(100vh - 300px);
+        }
+
+        .chat-message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .chat-message.user-message {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            max-width: 70%;
+            background: white;
+            border-radius: 18px;
+            padding: 12px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .user-message .message-content {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .message-text {
+            font-size: 15px;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+        }
+
+        .user-message .message-time {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .message-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #4A90E2;
+            color: white;
+            border-color: #4A90E2;
+        }
+
+        .quick-questions {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .quick-btn {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .quick-btn:hover {
+            background: #4A90E2;
+            color: white;
+            border-color: #4A90E2;
+        }
+
+        .chat-input-container {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 25px;
+            padding: 8px 16px;
+            border: 1px solid #e9ecef;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 15px;
+            padding: 8px 0;
+            color: #333;
+        }
+
+        .chat-input::placeholder {
+            color: #999;
+        }
+
+        .send-btn {
+            background: #4A90E2;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-left: 8px;
+        }
+
+        .send-btn:hover {
+            background: #357ABD;
+            transform: scale(1.05);
+        }
+
+        .send-btn .material-icons {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -1588,8 +1760,8 @@
                 </div>
                 <div class="ai-subtitle">어디로 여행 가고 싶으신가요? 맞춤 추천을 받아보세요!</div>
                 <div class="ai-input-container">
-                    <input type="text" class="ai-input" placeholder="예: 춘천 닭갈비 맛집 추천해줘">
-                    <button class="ai-send-btn">
+                    <input type="text" class="ai-input" id="homeAiInput" placeholder="예: 춘천 닭갈비 맛집 추천해줘" onclick="goToChatBot()" onfocus="goToChatBot()">
+                    <button class="ai-send-btn" onclick="goToChatBot()">
                         <span class="material-icons">send</span>
                     </button>
                 </div>
@@ -1794,7 +1966,7 @@
             </main>
         </div>
 
-        <!-- AI 챗봇 화면 -->
+        <!-- 새로운 AI 챗봇 화면 -->
         <div id="ai-screen" class="screen">
             <header class="header">
                 <div class="header-top">
@@ -1802,7 +1974,7 @@
                         <div class="logo-icon">
                             <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
                         </div>
-                        AI 여행 가이드
+                        AI 챗봇
                     </div>
                     <div style="display: flex; gap: 8px;">
                         <button class="notification-btn" data-screen="my-screen" onclick="switchToMyPage()">
@@ -1811,116 +1983,75 @@
                         <button class="notification-btn" onclick="clearChatHistory()">
                             <span class="material-icons">refresh</span>
                         </button>
-                    </div>
-                </div>
-                
-                <div class="balance-card">
-                    <div class="balance-label">AI 추천 포인트</div>
-                    <div class="balance-amount">+2,500P</div>
-                    <div class="balance-actions">
-                        <button class="balance-btn">추천받기</button>
-                        <button class="balance-btn">방문인증</button>
-                        <button class="balance-btn">리워드</button>
+                        <button class="notification-btn" onclick="switchScreen('home-screen')">
+                            <span class="material-icons">close</span>
+                        </button>
                     </div>
                 </div>
             </header>
 
-            <main class="main-content">
-                <!-- 챗봇 입력 -->
-                <section class="ai-section fade-in" style="margin-bottom: 20px;">
-                    <div class="ai-header">
-                        <div class="ai-icon">🤖</div>
-                        <div>
-                            <div class="ai-title">AI 여행 가이드</div>
-                        </div>
-                    </div>
-                    <div class="ai-subtitle">어디로 여행 가고 싶으신가요? 맞춤 추천을 받아보세요!</div>
-                    <div class="ai-input-container">
-                        <input type="text" class="ai-input" id="aiChatInput" placeholder="예: 춘천 닭갈비 맛집 추천해줘">
-                        <button class="ai-send-btn" onclick="sendChatMessage()">
-                            <span class="material-icons">send</span>
-                        </button>
-                    </div>
-                </section>
-
-                <!-- 리워드 미션 -->
-                <section class="mission-section">
-                    <div class="section-header">
-                        <h2 class="section-title">추천 방문 미션</h2>
-                        <a href="#" class="view-all-btn">전체보기</a>
-                    </div>
-                    
-                    <div class="mission-card">
-                        <div class="mission-title">🎯 AI 추천 장소 방문하기</div>
-                        <div class="mission-desc">챗봇이 추천한 장소를 실제 방문하고 인증하면 포인트 적립!</div>
-                        <div class="mission-progress">
-                            <div class="mission-progress-fill" style="width: 40%;"></div>
-                        </div>
-                        <div class="mission-reward">진행률 40% • 다음 방문 시 +500P</div>
-                    </div>
-                </section>
-
-                <!-- 채팅 기록 -->
-                <section class="local-currency-section">
-                    <div class="section-header">
-                        <h2 class="section-title">채팅 기록</h2>
-                        <a href="#" class="view-all-btn">전체보기</a>
-                    </div>
-                    
-                    <div id="chatHistory" class="activity-list">
-                        <div class="activity-item chat-item" data-status="visited">
-                            <div class="activity-icon">🍗</div>
-                            <div class="activity-info">
-                                <div class="activity-title">춘천 닭갈비 맛집 추천</div>
-                                <div class="activity-desc">춘천명동닭갈비, 숯불닭갈비 등 5곳 추천 • 방문 완료</div>
-                            </div>
-                            <div style="color: #28a745; font-size: 12px; display: flex; flex-direction: column; align-items: center;">
-                                <span>✓ 방문완료</span>
-                                <span style="color: #4A90E2;">+500P</span>
+            <main class="main-content" style="padding: 0; height: calc(100vh - 140px);">
+                <!-- 챗봇 대화 영역 -->
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- 환영 메시지 -->
+                        <div class="chat-message bot-message">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <div class="message-text">안녕하세요! 대동여지도 AI 여행 가이드입니다. 🗺️<br/>어디로 여행을 계획하고 계신가요? 맛집, 관광지, 숙소 등 무엇이든 물어보세요!</div>
+                                <div class="message-time">방금 전</div>
                             </div>
                         </div>
                         
-                        <div class="activity-item chat-item" data-status="pending">
-                            <div class="activity-icon">🌊</div>
-                            <div class="activity-info">
-                                <div class="activity-title">부산 해운대 관광 코스</div>
-                                <div class="activity-desc">해운대 해수욕장, 동백섬 등 추천 • 방문 대기</div>
-                            </div>
-                            <div style="color: #ff6b6b; font-size: 12px; display: flex; flex-direction: column; align-items: center;">
-                                <span>방문대기</span>
-                                <button class="visit-btn" onclick="visitPlace('busan')">방문인증</button>
+                        <!-- 샘플 대화 -->
+                        <div class="chat-message user-message">
+                            <div class="message-content">
+                                <div class="message-text">춘천 닭갈비 맛집 추천해줘</div>
+                                <div class="message-time">오후 2:30</div>
                             </div>
                         </div>
                         
-                        <div class="activity-item chat-item" data-status="pending">
-                            <div class="activity-icon">☕</div>
-                            <div class="activity-info">
-                                <div class="activity-title">강릉 커피거리 탐방</div>
-                                <div class="activity-desc">안목해변 커피거리, 테라로사 등 추천</div>
-                            </div>
-                            <div style="color: #ff6b6b; font-size: 12px; display: flex; flex-direction: column; align-items: center;">
-                                <span>방문대기</span>
-                                <button class="visit-btn" onclick="visitPlace('gangneung')">방문인증</button>
+                        <div class="chat-message bot-message">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <div class="message-text">춘천 닭갈비 맛집을 추천해드릴게요! 🍗<br/><br/>
+                                    <strong>1. 춘천명동닭갈비</strong><br/>
+                                    📍 춘천시 명동길 15<br/>
+                                    ⭐ 4.5/5 | 춘천사랑상품권 사용가능<br/><br/>
+                                    
+                                    <strong>2. 숯불닭갈비</strong><br/>
+                                    📍 춘천시 중앙로 89<br/>
+                                    ⭐ 4.3/5 | 할인 10% 적용<br/><br/>
+                                    
+                                    이 곳들을 방문하시면 포인트도 적립됩니다! 🎁
+                                </div>
+                                <div class="message-time">오후 2:31</div>
+                                <div class="message-actions">
+                                    <button class="action-btn" onclick="visitPlace('chuncheon')">방문 인증</button>
+                                    <button class="action-btn" onclick="shareRecommendation()">공유하기</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </section>
-
-                <!-- 빠른 질문 -->
-                <section style="margin-bottom: 20px;">
-                    <div class="section-header">
-                        <h2 class="section-title">빠른 질문</h2>
+                    
+                    <!-- 빠른 질문 버튼들 -->
+                    <div class="quick-questions">
+                        <button class="quick-btn" onclick="sendQuickMessage('서울 맛집 추천')">서울 맛집</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('부산 관광지')">부산 관광</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('제주도 여행코스')">제주도</button>
+                        <button class="quick-btn" onclick="sendQuickMessage('강원도 맛집')">강원도</button>
                     </div>
                     
-                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                        <button class="quick-question-btn" onclick="quickQuestion('서울 맛집 추천')">서울 맛집 추천</button>
-                        <button class="quick-question-btn" onclick="quickQuestion('부산 관광지')">부산 관광지</button>
-                        <button class="quick-question-btn" onclick="quickQuestion('제주도 여행코스')">제주도 여행코스</button>
-                        <button class="quick-question-btn" onclick="quickQuestion('강원도 맛집')">강원도 맛집</button>
-                        <button class="quick-question-btn" onclick="quickQuestion('경주 역사탐방')">경주 역사탐방</button>
-                        <button class="quick-question-btn" onclick="quickQuestion('전주 한옥마을')">전주 한옥마을</button>
+                    <!-- 메시지 입력 영역 -->
+                    <div class="chat-input-container">
+                        <div class="input-wrapper">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="여행지, 맛집, 관광지 등을 물어보세요...">
+                            <button class="send-btn" onclick="sendMessage()">
+                                <span class="material-icons">send</span>
+                            </button>
+                        </div>
                     </div>
-                </section>
+                </div>
             </main>
         </div>
 
@@ -2698,6 +2829,159 @@
             // AI 화면으로 전환
             switchScreen('ai-screen');
         });
+
+        // 홈화면에서 챗봇으로 이동하는 함수
+        function goToChatBot() {
+            // 홈화면의 입력값 가져오기
+            const homeInput = document.getElementById('homeAiInput');
+            const inputValue = homeInput.value;
+            
+            // AI 화면으로 전환
+            switchScreen('ai-screen');
+            
+            // 모든 네비게이션 아이템에서 active 클래스 제거
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            // 입력값이 있으면 챗봇에 메시지 전송
+            if (inputValue.trim()) {
+                setTimeout(() => {
+                    sendMessageWithText(inputValue);
+                    homeInput.value = ''; // 홈 입력창 초기화
+                }, 300);
+            } else {
+                // 입력값이 없으면 챗봇 입력창에 포커스
+                setTimeout(() => {
+                    document.getElementById('chatInput').focus();
+                }, 300);
+            }
+        }
+
+        // 챗봇 메시지 전송 함수
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                sendMessageWithText(message);
+                input.value = '';
+            }
+        }
+
+        // 텍스트로 메시지 전송하는 함수
+        function sendMessageWithText(messageText) {
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // 사용자 메시지 추가
+            const userMessage = createMessage(messageText, 'user');
+            chatMessages.appendChild(userMessage);
+            
+            // 스크롤을 아래로
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // AI 응답 시뮬레이션 (2초 후)
+            setTimeout(() => {
+                const aiResponse = generateAIResponse(messageText);
+                const botMessage = createMessage(aiResponse, 'bot');
+                chatMessages.appendChild(botMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1500);
+        }
+
+        // 메시지 요소 생성 함수
+        function createMessage(text, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${type === 'user' ? 'user-message' : 'bot-message'}`;
+            
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ko-KR', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            
+            if (type === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        <div class="message-text">${text}</div>
+                        <div class="message-time">${timeString}</div>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="message-text">${text}</div>
+                        <div class="message-time">${timeString}</div>
+                        <div class="message-actions">
+                            <button class="action-btn" onclick="visitPlace('recommended')">방문 인증</button>
+                            <button class="action-btn" onclick="shareRecommendation()">공유하기</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return messageDiv;
+        }
+
+        // AI 응답 생성 함수 (시뮬레이션)
+        function generateAIResponse(userMessage) {
+            const responses = {
+                '춘천': '춘천 닭갈비 맛집을 추천해드릴게요! 🍗<br/><br/><strong>1. 춘천명동닭갈비</strong><br/>📍 춘천시 명동길 15<br/>⭐ 4.5/5 | 춘천사랑상품권 사용가능<br/><br/><strong>2. 숯불닭갈비</strong><br/>📍 춘천시 중앙로 89<br/>⭐ 4.3/5 | 할인 10% 적용<br/><br/>이 곳들을 방문하시면 포인트도 적립됩니다! 🎁',
+                '부산': '부산 여행 코스를 추천해드릴게요! 🌊<br/><br/><strong>1. 해운대 해수욕장</strong><br/>📍 부산 해운대구<br/>🏖️ 대표 해수욕장 | 부산화폐 사용가능<br/><br/><strong>2. 감천문화마을</strong><br/>📍 부산 사하구<br/>🎨 알록달록한 벽화마을<br/><br/>방문 후 인증하면 +500P 적립! 🎁',
+                '서울': '서울 맛집을 추천해드릴게요! 🍽️<br/><br/><strong>1. 명동교자</strong><br/>📍 서울 중구 명동<br/>🥟 전통 만두 전문점 | 서울사랑상품권 사용<br/><br/><strong>2. 광장시장</strong><br/>📍 서울 종로구<br/>🍳 빈대떡, 마약김밥으로 유명<br/><br/>방문하시면 여행 포인트 적립! ✨',
+                '제주도': '제주도 여행 코스를 추천해드릴게요! 🏝️<br/><br/><strong>1. 성산일출봉</strong><br/>📍 제주 서귀포시<br/>🌅 일출 명소 | 제주사랑상품권 사용<br/><br/><strong>2. 한라산</strong><br/>📍 제주시<br/>⛰️ 등산 코스 추천<br/><br/>자연 속에서 힐링하고 포인트도 받아가세요! 🌿'
+            };
+            
+            // 키워드 매칭으로 응답 찾기
+            for (const [keyword, response] of Object.entries(responses)) {
+                if (userMessage.includes(keyword)) {
+                    return response;
+                }
+            }
+            
+            // 기본 응답
+            return `"${userMessage}"에 대한 정보를 찾고 있어요! 🔍<br/><br/>죄송하지만 아직 해당 지역의 정보가 준비되지 않았습니다.<br/>다른 지역이나 다른 질문을 해보시겠어요?<br/><br/>추천 키워드: 춘천, 부산, 서울, 제주도 🗺️`;
+        }
+
+        // 빠른 질문 전송 함수
+        function sendQuickMessage(message) {
+            sendMessageWithText(message);
+        }
+
+        // 챗봇 입력창에서 엔터키 처리
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+
+        // 방문 인증 함수
+        function visitPlace(place) {
+            alert('방문 인증이 완료되었습니다! +500P 적립 🎉');
+        }
+
+        // 추천 공유 함수
+        function shareRecommendation() {
+            alert('추천 정보가 클립보드에 복사되었습니다! 📋');
+        }
+
+        // 채팅 기록 초기화 함수
+        function clearChatHistory() {
+            const chatMessages = document.getElementById('chatMessages');
+            // 환영 메시지만 남기고 모든 메시지 제거
+            const welcomeMessage = chatMessages.querySelector('.chat-message.bot-message');
+            chatMessages.innerHTML = '';
+            if (welcomeMessage) {
+                chatMessages.appendChild(welcomeMessage.cloneNode(true));
+            }
+        }
 
         // 잔액 카드 애니메이션
         let balance = 847500;
