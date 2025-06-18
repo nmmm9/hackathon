@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대동여지도 - 지역화폐 통합 서비스</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 390px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* 화면 전환 스타일 */
+        .screen {
+            display: none;
+            min-height: calc(100vh - 70px);
+            padding-bottom: 70px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* 헤더 */
+        .header {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white;
+            padding: 20px 20px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            overflow: hidden;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .notification-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        .balance-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .balance-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .balance-btn {
+            flex: 1;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .balance-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* 메인 콘텐츠 */
+        .main-content {
+            padding: 20px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .quick-action {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .quick-action:hover {
+            border-color: #4A90E2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+        }
+
+        .quick-action-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            border-radius: 12px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .quick-action-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .quick-action-desc {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* AI 챗봇 섹션 */
+        .ai-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ai-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-input-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-input {
+            width: 100%;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 12px 50px 12px 20px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .ai-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .ai-send-btn {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* 지역화폐 현황 */
+        .local-currency-section {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .view-all-btn {
+            font-size: 14px;
+            color: #4A90E2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .currency-cards {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .currency-card {
+            flex: 0 0 280px;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #f1f3f4;
+        }
+
+        .currency-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .currency-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 10px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .currency-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .currency-info p {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .currency-balance {
+            font-size: 24px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+
+        .currency-change {
+            font-size: 12px;
+            color: #28a745;
+        }
+
+        /* 미션 & 리워드 */
+        .mission-section {
+            margin-bottom: 30px;
+        }
+
+        .mission-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-card::after {
+            content: '🎯';
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 30px;
+            opacity: 0.3;
+        }
+
+        .mission-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .mission-desc {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .mission-progress {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .mission-progress-fill {
+            background: white;
+            height: 100%;
+            width: 60%;
+            border-radius: 10px;
+        }
+
+        .mission-reward {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* 최근 활동 */
+        .recent-activity-section {
+            margin-bottom: 80px;
+        }
+
+        .activity-list {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #f1f3f4;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 44px;
+            height: 44px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .activity-info {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .activity-desc {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .activity-amount {
+            font-size: 16px;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        /* 하단 네비게이션 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 390px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6c757d;
+            font-size: 12px;
+            padding: 8px 12px;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: #4A90E2;
+        }
+
+        .nav-item:hover {
+            color: #4A90E2;
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        /* QR 중앙 버튼 스타일 */
+        .qr-nav-item {
+            position: relative;
+            transform: translateY(-10px);
+        }
+
+        .qr-nav-btn {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(74, 144, 226, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 3px solid white;
+        }
+
+        .qr-nav-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.6);
+        }
+
+        .qr-nav-item .nav-label {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #6c757d;
+            white-space: nowrap;
+        }
+
+        /* QR 스캔 화면 전용 스타일 */
+        .qr-scanner-container {
+            background: #000;
+            border-radius: 20px;
+            margin: 20px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border: 2px solid #4A90E2;
+            border-radius: 16px;
+            background: transparent;
+        }
+
+        .scanner-corners {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+        }
+
+        .scanner-corners::before,
+        .scanner-corners::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 3px;
+            background: #4A90E2;
+        }
+
+        .scanner-corners::before {
+            top: 0;
+            left: 0;
+        }
+
+        .scanner-corners::after {
+            bottom: 0;
+            right: 0;
+        }
+
+        .scanner-corners.top-left {
+            top: -15px;
+            left: -15px;
+        }
+
+        .scanner-corners.top-right {
+            top: -15px;
+            right: -15px;
+            transform: rotate(90deg);
+        }
+
+        .scanner-corners.bottom-left {
+            bottom: -15px;
+            left: -15px;
+            transform: rotate(-90deg);
+        }
+
+        .scanner-corners.bottom-right {
+            bottom: -15px;
+            right: -15px;
+            transform: rotate(180deg);
+        }
+
+        .scanner-line {
+            position: absolute;
+            width: 180px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #4A90E2, transparent);
+            animation: scanLine 2s linear infinite;
+        }
+
+        @keyframes scanLine {
+            0% { top: 10px; }
+            100% { top: 180px; }
+        }
+
+        .payment-section {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            margin-top: 20px;
+            padding: 24px;
+        }
+
+        .payment-amount {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .amount-input {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            border: none;
+            outline: none;
+            color: #212529;
+            background: transparent;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+
+        .currency-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .currency-option {
+            flex: 0 0 auto;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .currency-option.selected {
+            border-color: #4A90E2;
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .currency-option-logo {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pay-button {
+            width: 100%;
+            background: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pay-button:hover {
+            background: #357ABD;
+            transform: translateY(-1px);
+        }
+
+        .pay-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .quick-amount-btn {
+            flex: 1;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #495057;
+        }
+
+        .quick-amount-btn:hover {
+            border-color: #4A90E2;
+            color: #4A90E2;
+        }
+
+        /* 여행 지도 스타일 */
+        .travel-map-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .travel-map {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .region-area {
+            position: absolute;
+            cursor: pointer;
+            transition: all 0.3s;
+            pointer-events: all;
+            border-radius: 8px;
+        }
+
+        .region-area:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        .region-area.unlocked {
+            background: rgba(74, 144, 226, 0.3);
+            border: 2px solid #4A90E2;
+        }
+
+        .region-area.colored {
+            background: rgba(40, 167, 69, 0.6);
+            border: 2px solid #28a745;
+        }
+
+        .region-area.locked {
+            background: rgba(108, 117, 125, 0.2);
+            border: 2px dashed #6c757d;
+            cursor: not-allowed;
+        }
+
+        .region-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.9);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #212529;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .progress-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid #f1f3f4;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #4A90E2;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        /* 여행 기록 스타일 */
+        .travel-record {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #f1f3f4;
+            position: relative;
+        }
+
+        .travel-record.featured {
+            border-left: 4px solid #4A90E2;
+            background: linear-gradient(90deg, rgba(74, 144, 226, 0.05) 0%, white 10%);
+        }
+
+        .record-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .record-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            border-radius: 12px;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .record-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .record-info p {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .record-content {
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .record-images {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .record-image {
+            width: 60px;
+            height: 60px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .record-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .record-tag {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4A90E2;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .unlock-condition {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .unlock-condition h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #e17055;
+        }
+
+        .unlock-condition p {
+            font-size: 14px;
+            color: #d63031;
+        }
+
+        .condition-progress {
+            background: rgba(255,255,255,0.5);
+            border-radius: 8px;
+            height: 8px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .condition-progress-fill {
+            background: #00b894;
+            height: 100%;
+            border-radius: 8px;
+            transition: width 0.3s;
+        }
+
+        /* 색칠하기 모달 */
+        .paint-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .paint-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 90%;
+            max-width: 350px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .paint-modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .paint-modal-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+        }
+
+        .record-form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #212529;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #4A90E2;
+        }
+
+        .form-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .photo-upload {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .photo-placeholder {
+            width: 60px;
+            height: 60px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .photo-placeholder:hover {
+            border-color: #4A90E2;
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn-primary {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .modal-btn-primary:hover {
+            background: #357ABD;
+        }
+
+        .modal-btn-secondary {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        .modal-btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        /* 반응형 */
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+            
+            .main-content {
+                padding: 15px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 애니메이션 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-up {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .modal-btn {
+            background: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 홈 화면 -->
+        <div id="home-screen" class="screen active">
+            <!-- 헤더 -->
+            <header class="header">
+                <div class="header-top">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
+                        </div>
+                        대동여지도
+                    </div>
+                    <button class="notification-btn">
+                        <span class="material-icons">notifications</span>
+                    </button>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">전체 보유 금액</div>
+                    <div class="balance-amount">₩847,500</div>
+                    <div class="balance-actions">
+                        <button class="balance-btn">충전</button>
+                        <button class="balance-btn">송금</button>
+                        <button class="balance-btn">내역</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="main-content">
+            <!-- 빠른 액션 -->
+            <section class="quick-actions">
+                <a href="#" class="quick-action">
+                    <div class="quick-action-icon">
+                        <span class="material-icons">qr_code_scanner</span>
+                    </div>
+                    <div class="quick-action-title">QR 결제</div>
+                    <div class="quick-action-desc">매장에서 간편 결제</div>
+                </a>
+                
+                <a href="#" class="quick-action">
+                    <div class="quick-action-icon">
+                        <span class="material-icons">map</span>
+                    </div>
+                    <div class="quick-action-title">주변 가맹점</div>
+                    <div class="quick-action-desc">내 위치 기반 추천</div>
+                </a>
+            </section>
+
+            <!-- AI 챗봇 섹션 -->
+            <section class="ai-section fade-in">
+                <div class="ai-header">
+                    <div class="ai-icon">🤖</div>
+                    <div>
+                        <div class="ai-title">AI 여행 가이드</div>
+                    </div>
+                </div>
+                <div class="ai-subtitle">어디로 여행 가고 싶으신가요? 맞춤 추천을 받아보세요!</div>
+                <div class="ai-input-container">
+                    <input type="text" class="ai-input" placeholder="예: 춘천 닭갈비 맛집 추천해줘">
+                    <button class="ai-send-btn">
+                        <span class="material-icons">send</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 지역화폐 현황 -->
+            <section class="local-currency-section">
+                <div class="section-header">
+                    <h2 class="section-title">보유 지역화폐</h2>
+                    <a href="#" class="view-all-btn">전체보기</a>
+                </div>
+                
+                <div class="currency-cards">
+                    <div class="currency-card">
+                        <div class="currency-header">
+                            <div class="currency-logo">서</div>
+                            <div class="currency-info">
+                                <h3>서울사랑상품권</h3>
+                                <p>서울특별시</p>
+                            </div>
+                        </div>
+                        <div class="currency-balance">₩350,000</div>
+                        <div class="currency-change">+50,000원 충전</div>
+                    </div>
+                    
+                    <div class="currency-card">
+                        <div class="currency-header">
+                            <div class="currency-logo">경</div>
+                            <div class="currency-info">
+                                <h3>경기지역화폐</h3>
+                                <p>경기도</p>
+                            </div>
+                        </div>
+                        <div class="currency-balance">₩275,000</div>
+                        <div class="currency-change">+25,000원 적립</div>
+                    </div>
+                    
+                    <div class="currency-card">
+                        <div class="currency-header">
+                            <div class="currency-logo">부</div>
+                            <div class="currency-info">
+                                <h3>부산화폐</h3>
+                                <p>부산광역시</p>
+                            </div>
+                        </div>
+                        <div class="currency-balance">₩122,500</div>
+                        <div class="currency-change">+12,500원 리워드</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 미션 & 리워드 -->
+            <section class="mission-section">
+                <div class="section-header">
+                    <h2 class="section-title">이번 주 미션</h2>
+                </div>
+                
+                <div class="mission-card">
+                    <div class="mission-title">전국 여행 챌린지</div>
+                    <div class="mission-desc">5개 지역 방문하고 지역화폐로 결제하기</div>
+                    <div class="mission-progress">
+                        <div class="mission-progress-fill"></div>
+                    </div>
+                    <div class="mission-reward">진행률 60% • 리워드 +10,000 포인트</div>
+                </div>
+            </section>
+
+            <!-- 최근 활동 -->
+            <section class="recent-activity-section">
+                <div class="section-header">
+                    <h2 class="section-title">최근 활동</h2>
+                    <a href="#" class="view-all-btn">전체보기</a>
+                </div>
+                
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">🍜</div>
+                        <div class="activity-info">
+                            <div class="activity-title">춘천명동닭갈비</div>
+                            <div class="activity-desc">춘천사랑상품권 • 오늘 오후 2:15</div>
+                        </div>
+                        <div class="activity-amount">-₩18,000</div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">☕</div>
+                        <div class="activity-info">
+                            <div class="activity-title">스타벅스 명동점</div>
+                            <div class="activity-desc">서울사랑상품권 • 어제 오전 11:30</div>
+                        </div>
+                        <div class="activity-amount">-₩8,500</div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">🏪</div>
+                        <div class="activity-info">
+                            <div class="activity-title">이마트 수원점</div>
+                            <div class="activity-desc">경기지역화폐 • 2일 전</div>
+                        </div>
+                        <div class="activity-amount">-₩45,600</div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">🎁</div>
+                        <div class="activity-info">
+                            <div class="activity-title">미션 완료 리워드</div>
+                            <div class="activity-desc">전국 여행 챌린지 • 3일 전</div>
+                        </div>
+                        <div class="activity-amount">+₩5,000</div>
+                    </div>
+                </div>
+            </section>
+            </main>
+
+            <!-- QR 스캔 버튼 -->
+            <button class="qr-scan-btn" onclick="openQRScanner()">
+                <span class="material-icons">qr_code_scanner</span>
+            </button>
+        </div>
+
+        <!-- 지갑 화면 -->
+        <div id="wallet-screen" class="screen">
+            <header class="header">
+                <div class="header-top">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
+                        </div>
+                        내 지갑
+                    </div>
+                    <button class="notification-btn">
+                        <span class="material-icons">settings</span>
+                    </button>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">전체 보유 금액</div>
+                    <div class="balance-amount">₩847,500</div>
+                    <div class="balance-actions">
+                        <button class="balance-btn">충전</button>
+                        <button class="balance-btn">송금</button>
+                        <button class="balance-btn">환전</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <section class="local-currency-section">
+                    <div class="section-header">
+                        <h2 class="section-title">보유 지역화폐</h2>
+                        <a href="#" class="view-all-btn">관리</a>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div class="currency-card" style="flex: none;">
+                            <div class="currency-header">
+                                <div class="currency-logo">서</div>
+                                <div class="currency-info">
+                                    <h3>서울사랑상품권</h3>
+                                    <p>서울특별시 • 유효기간: 2024.12.31</p>
+                                </div>
+                            </div>
+                            <div class="currency-balance">₩350,000</div>
+                            <div class="currency-change">+50,000원 충전 (2024.01.15)</div>
+                        </div>
+                        
+                        <div class="currency-card" style="flex: none;">
+                            <div class="currency-header">
+                                <div class="currency-logo">경</div>
+                                <div class="currency-info">
+                                    <h3>경기지역화폐</h3>
+                                    <p>경기도 • 유효기간: 2024.12.31</p>
+                                </div>
+                            </div>
+                            <div class="currency-balance">₩275,000</div>
+                            <div class="currency-change">+25,000원 적립 (2024.01.14)</div>
+                        </div>
+                        
+                        <div class="currency-card" style="flex: none;">
+                            <div class="currency-header">
+                                <div class="currency-logo">부</div>
+                                <div class="currency-info">
+                                    <h3>부산화폐</h3>
+                                    <p>부산광역시 • 유효기간: 2024.12.31</p>
+                                </div>
+                            </div>
+                            <div class="currency-balance">₩122,500</div>
+                            <div class="currency-change">+12,500원 리워드 (2024.01.13)</div>
+                        </div>
+                        
+                        <div class="currency-card" style="flex: none;">
+                            <div class="currency-header">
+                                <div class="currency-logo">+</div>
+                                <div class="currency-info">
+                                    <h3>새 지역화폐 추가</h3>
+                                    <p>여행 예정 지역의 화폐를 미리 준비하세요</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- AI 가이드 화면 -->
+        <div id="ai-screen" class="screen">
+            <header class="header">
+                <div class="header-top">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
+                        </div>
+                        AI 가이드
+                    </div>
+                    <button class="notification-btn">
+                        <span class="material-icons">history</span>
+                    </button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <section class="ai-section fade-in" style="margin-bottom: 20px;">
+                    <div class="ai-header">
+                        <div class="ai-icon">🤖</div>
+                        <div>
+                            <div class="ai-title">여행 가이드</div>
+                        </div>
+                    </div>
+                    <div class="ai-subtitle">어디로 여행 가고 싶으신가요?</div>
+                    <div class="ai-input-container">
+                        <input type="text" class="ai-input" placeholder="예: 춘천 닭갈비 맛집 추천해줘">
+                        <button class="ai-send-btn">
+                            <span class="material-icons">send</span>
+                        </button>
+                    </div>
+                </section>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">💬</div>
+                        <div class="activity-info">
+                            <div class="activity-title">춘천 닭갈비 맛집 추천</div>
+                            <div class="activity-desc">5개 맛집과 지역화폐 사용처 안내</div>
+                        </div>
+                        <div style="color: #4A90E2; font-size: 12px;">완료</div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">🗺️</div>
+                        <div class="activity-info">
+                            <div class="activity-title">부산 해운대 관광 코스</div>
+                            <div class="activity-desc">1박 2일 여행 일정과 할인 혜택</div>
+                        </div>
+                        <div style="color: #4A90E2; font-size: 12px;">완료</div>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">🎯</div>
+                        <div class="activity-info">
+                            <div class="activity-title">미션 추천</div>
+                            <div class="activity-desc">오늘의 맞춤 미션과 리워드</div>
+                        </div>
+                        <div style="color: #28a745; font-size: 12px;">새로움</div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 여행 지도 화면 -->
+        <div id="map-screen" class="screen">
+            <header class="header">
+                <div class="header-top">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
+                        </div>
+                        나의 여행지도
+                    </div>
+                    <button class="notification-btn">
+                        <span class="material-icons">info</span>
+                    </button>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">여행 레벨 7</div>
+                    <div class="balance-amount">전국 탐험가</div>
+                    <div class="balance-actions">
+                        <button class="balance-btn">달성 조건</button>
+                        <button class="balance-btn">랭킹</button>
+                        <button class="balance-btn">보상</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <!-- 진행률 통계 -->
+                <div class="progress-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">5</div>
+                        <div class="stat-label">방문한 지역</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">8</div>
+                        <div class="stat-label">색칠 가능</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">17</div>
+                        <div class="stat-label">전체 지역</div>
+                    </div>
+                </div>
+
+                <!-- 잠금 해제 조건 -->
+                <div class="unlock-condition">
+                    <h3>🎯 다음 지역 잠금 해제</h3>
+                    <p>제주도 지역화폐로 5만원 이상 결제하기</p>
+                    <div class="condition-progress">
+                        <div class="condition-progress-fill" style="width: 60%;"></div>
+                    </div>
+                    <div style="font-size: 12px; margin-top: 8px; color: #636e72;">3만원 / 5만원 (60%)</div>
+                </div>
+
+                <!-- 여행 지도 -->
+                <div class="travel-map-container">
+                    <img src="map.jpg" alt="대한민국 지도" class="travel-map" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div style="display: none; width: 100%; height: 100%; background: #f8f9fa; align-items: center; justify-content: center; flex-direction: column;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🗺️</div>
+                        <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">지도 로드 중...</div>
+                        <div style="font-size: 14px; color: #6c757d;">map.jpg 파일을 확인해주세요</div>
+                    </div>
+                    
+                    <!-- 지역 오버레이 -->
+                    <div class="map-overlay">
+                        <!-- 서울 -->
+                        <div class="region-area colored" data-region="seoul" style="top: 15%; left: 45%; width: 8%; height: 8%;">
+                            <div class="region-label">서울</div>
+                        </div>
+                        
+                        <!-- 경기도 -->
+                        <div class="region-area colored" data-region="gyeonggi" style="top: 12%; left: 40%; width: 15%; height: 15%;">
+                            <div class="region-label">경기도</div>
+                        </div>
+                        
+                        <!-- 부산 -->
+                        <div class="region-area colored" data-region="busan" style="top: 70%; left: 75%; width: 8%; height: 8%;">
+                            <div class="region-label">부산</div>
+                        </div>
+                        
+                        <!-- 대구 -->
+                        <div class="region-area unlocked" data-region="daegu" style="top: 55%; left: 65%; width: 8%; height: 8%;">
+                            <div class="region-label">대구</div>
+                        </div>
+                        
+                        <!-- 인천 -->
+                        <div class="region-area unlocked" data-region="incheon" style="top: 18%; left: 35%; width: 8%; height: 8%;">
+                            <div class="region-label">인천</div>
+                        </div>
+                        
+                        <!-- 광주 -->
+                        <div class="region-area unlocked" data-region="gwangju" style="top: 65%; left: 40%; width: 8%; height: 8%;">
+                            <div class="region-label">광주</div>
+                        </div>
+                        
+                        <!-- 대전 -->
+                        <div class="region-area unlocked" data-region="daejeon" style="top: 40%; left: 45%; width: 8%; height: 8%;">
+                            <div class="region-label">대전</div>
+                        </div>
+                        
+                        <!-- 울산 -->
+                        <div class="region-area unlocked" data-region="ulsan" style="top: 65%; left: 80%; width: 6%; height: 6%;">
+                            <div class="region-label">울산</div>
+                        </div>
+                        
+                        <!-- 강원도 -->
+                        <div class="region-area colored" data-region="gangwon" style="top: 8%; left: 55%; width: 20%; height: 20%;">
+                            <div class="region-label">강원도</div>
+                        </div>
+                        
+                        <!-- 충청북도 -->
+                        <div class="region-area locked" data-region="chungbuk" style="top: 35%; left: 50%; width: 12%; height: 12%;">
+                            <div class="region-label">충북</div>
+                        </div>
+                        
+                        <!-- 충청남도 -->
+                        <div class="region-area locked" data-region="chungnam" style="top: 35%; left: 35%; width: 12%; height: 12%;">
+                            <div class="region-label">충남</div>
+                        </div>
+                        
+                        <!-- 전라북도 -->
+                        <div class="region-area locked" data-region="jeonbuk" style="top: 50%; left: 35%; width: 12%; height: 12%;">
+                            <div class="region-label">전북</div>
+                        </div>
+                        
+                        <!-- 전라남도 -->
+                        <div class="region-area locked" data-region="jeonnam" style="top: 62%; left: 30%; width: 15%; height: 15%;">
+                            <div class="region-label">전남</div>
+                        </div>
+                        
+                        <!-- 경상북도 -->
+                        <div class="region-area locked" data-region="gyeongbuk" style="top: 35%; left: 60%; width: 15%; height: 20%;">
+                            <div class="region-label">경북</div>
+                        </div>
+                        
+                        <!-- 경상남도 -->
+                        <div class="region-area locked" data-region="gyeongnam" style="top: 58%; left: 55%; width: 18%; height: 15%;">
+                            <div class="region-label">경남</div>
+                        </div>
+                        
+                        <!-- 제주도 -->
+                        <div class="region-area locked" data-region="jeju" style="top: 85%; left: 25%; width: 8%; height: 6%;">
+                            <div class="region-label">제주도</div>
+                        </div>
+                        
+                        <!-- 세종 -->
+                        <div class="region-area locked" data-region="sejong" style="top: 38%; left: 42%; width: 4%; height: 4%;">
+                            <div class="region-label">세종</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 최근 여행 기록 -->
+                <section class="local-currency-section">
+                    <div class="section-header">
+                        <h2 class="section-title">최근 여행 기록</h2>
+                        <a href="#" class="view-all-btn">전체보기</a>
+                    </div>
+                    
+                    <div class="travel-record featured">
+                        <div class="record-header">
+                            <div class="record-icon">🏔️</div>
+                            <div class="record-info">
+                                <h3>춘천 여행</h3>
+                                <p>2024.01.15 • 강원도</p>
+                            </div>
+                        </div>
+                        <div class="record-content">
+                            춘천 명동닭갈비에서 정말 맛있는 닭갈비를 먹었어요! 춘천사랑상품권으로 결제하니 할인도 받고 좋았습니다.
+                        </div>
+                        <div class="record-images">
+                            <div class="record-image">🍗</div>
+                            <div class="record-image">🏞️</div>
+                            <div class="record-image">☕</div>
+                        </div>
+                        <div class="record-tags">
+                            <span class="record-tag">#닭갈비</span>
+                            <span class="record-tag">#남이섬</span>
+                            <span class="record-tag">#춘천사랑상품권</span>
+                        </div>
+                    </div>
+                    
+                    <div class="travel-record">
+                        <div class="record-header">
+                            <div class="record-icon">🌊</div>
+                            <div class="record-info">
+                                <h3>부산 해운대</h3>
+                                <p>2024.01.10 • 부산광역시</p>
+                            </div>
+                        </div>
+                        <div class="record-content">
+                            해운대 해수욕장에서 아름다운 일출을 봤어요. 부산화폐로 해물탕도 먹고 즐거운 여행이었습니다!
+                        </div>
+                        <div class="record-images">
+                            <div class="record-image">🦀</div>
+                            <div class="record-image">🌅</div>
+                        </div>
+                        <div class="record-tags">
+                            <span class="record-tag">#해운대</span>
+                            <span class="record-tag">#일출</span>
+                            <span class="record-tag">#부산화폐</span>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- 마이 화면 -->
+        <div id="my-screen" class="screen">
+            <header class="header">
+                <div class="header-top">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
+                        </div>
+                        마이페이지
+                    </div>
+                    <button class="notification-btn">
+                        <span class="material-icons">settings</span>
+                    </button>
+                </div>
+                
+                <div class="balance-card">
+                    <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                        <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; margin-right: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px;">👤</div>
+                        <div>
+                            <div style="font-size: 20px; font-weight: 600; margin-bottom: 4px;">김여행님</div>
+                            <div style="font-size: 14px; opacity: 0.9;">레벨 7 • 전국 탐험가</div>
+                        </div>
+                    </div>
+                    <div class="balance-actions">
+                        <button class="balance-btn">프로필 수정</button>
+                        <button class="balance-btn">설정</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <section class="mission-section">
+                    <div class="mission-card">
+                        <div class="mission-title">이번 달 성과</div>
+                        <div class="mission-desc">5개 지역 방문 • 15회 지역화폐 사용</div>
+                        <div class="mission-progress">
+                            <div class="mission-progress-fill"></div>
+                        </div>
+                        <div class="mission-reward">다음 레벨까지 40% 남음</div>
+                    </div>
+                </section>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">📊</div>
+                        <div class="activity-info">
+                            <div class="activity-title">사용 통계</div>
+                            <div class="activity-desc">월별 사용 현황과 절세 혜택</div>
+                        </div>
+                        <span class="material-icons" style="color: #6c757d;">chevron_right</span>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">🎯</div>
+                        <div class="activity-info">
+                            <div class="activity-title">미션 현황</div>
+                            <div class="activity-desc">진행중인 미션과 달성 기록</div>
+                        </div>
+                        <span class="material-icons" style="color: #6c757d;">chevron_right</span>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">🏆</div>
+                        <div class="activity-info">
+                            <div class="activity-title">리워드</div>
+                            <div class="activity-desc">적립된 포인트와 쿠폰</div>
+                        </div>
+                        <span class="material-icons" style="color: #6c757d;">chevron_right</span>
+                    </div>
+                    
+                    <div class="activity-item">
+                        <div class="activity-icon">❓</div>
+                        <div class="activity-info">
+                            <div class="activity-title">고객센터</div>
+                            <div class="activity-desc">문의하기 • FAQ • 공지사항</div>
+                        </div>
+                        <span class="material-icons" style="color: #6c757d;">chevron_right</span>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- QR 결제 화면 -->
+        <div id="qr-screen" class="screen">
+            <header class="header">
+                <div class="header-top">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
+                        </div>
+                        QR 결제
+                    </div>
+                    <button class="notification-btn" onclick="switchScreen('home-screen')">
+                        <span class="material-icons">close</span>
+                    </button>
+                </div>
+            </header>
+
+            <main style="padding: 0; background: #f8f9fa;">
+                <!-- QR 스캐너 -->
+                <div class="qr-scanner-container">
+                    <div style="color: #666; text-align: center;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">📱</div>
+                        <div style="font-size: 16px; margin-bottom: 8px;">카메라 뷰</div>
+                        <div style="font-size: 14px; opacity: 0.7;">QR 코드를 스캔해주세요</div>
+                    </div>
+                    
+                    <div class="scanner-overlay">
+                        <div class="scanner-corners top-left"></div>
+                        <div class="scanner-corners top-right"></div>
+                        <div class="scanner-corners bottom-left"></div>
+                        <div class="scanner-corners bottom-right"></div>
+                        <div class="scanner-line"></div>
+                    </div>
+                </div>
+
+                <!-- 결제 정보 -->
+                <div class="payment-section">
+                    <div class="payment-amount">
+                        <div style="font-size: 14px; color: #6c757d; margin-bottom: 8px;">결제 금액</div>
+                        <input type="text" class="amount-input" placeholder="0" id="paymentAmount">
+                        <div style="font-size: 14px; color: #6c757d;">원</div>
+                    </div>
+
+                    <!-- 지역화폐 선택 -->
+                    <div style="margin-bottom: 24px;">
+                        <div style="font-size: 16px; font-weight: 600; margin-bottom: 12px;">결제 수단 선택</div>
+                        <div class="currency-selector">
+                            <div class="currency-option selected" data-currency="seoul">
+                                <div class="currency-option-logo">서</div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500;">서울사랑상품권</div>
+                                    <div style="font-size: 12px; color: #6c757d;">₩350,000</div>
+                                </div>
+                            </div>
+                            
+                            <div class="currency-option" data-currency="gyeonggi">
+                                <div class="currency-option-logo">경</div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500;">경기지역화폐</div>
+                                    <div style="font-size: 12px; color: #6c757d;">₩275,000</div>
+                                </div>
+                            </div>
+                            
+                            <div class="currency-option" data-currency="busan">
+                                <div class="currency-option-logo">부</div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500;">부산화폐</div>
+                                    <div style="font-size: 12px; color: #6c757d;">₩122,500</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 매장 정보 (QR 스캔 후 표시될 영역) -->
+                    <div id="merchantInfo" style="display: none;">
+                        <div style="background: #f8f9fa; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                <div style="width: 40px; height: 40px; background: #4A90E2; border-radius: 8px; margin-right: 12px; display: flex; align-items: center; justify-content: center; color: white;">🏪</div>
+                                <div>
+                                    <div style="font-size: 16px; font-weight: 600;">스타벅스 명동점</div>
+                                    <div style="font-size: 14px; color: #6c757d;">서울 중구 명동길 74</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 결제 버튼 -->
+                    <button class="pay-button" onclick="processPayment()">
+                        결제하기
+                    </button>
+
+                    <!-- 빠른 금액 선택 -->
+                    <div style="margin-top: 20px;">
+                        <div style="font-size: 14px; font-weight: 500; margin-bottom: 12px; color: #6c757d;">빠른 선택</div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="quick-amount-btn" data-amount="5000">5천원</button>
+                            <button class="quick-amount-btn" data-amount="10000">1만원</button>
+                            <button class="quick-amount-btn" data-amount="20000">2만원</button>
+                            <button class="quick-amount-btn" data-amount="50000">5만원</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 색칠하기 모달 -->
+        <div id="paintModal" class="paint-modal">
+            <div class="paint-modal-content">
+                <div class="paint-modal-header">
+                    <div class="paint-modal-icon">🎨</div>
+                    <h3 id="modalRegionName">서울 색칠하기</h3>
+                    <p>이 지역에 대한 여행 기록을 남겨보세요!</p>
+                </div>
+                
+                <div class="record-form">
+                    <div class="form-group">
+                        <label class="form-label">여행 제목</label>
+                        <input type="text" class="form-input" id="travelTitle" placeholder="예: 서울 맛집 투어">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">여행 내용</label>
+                        <textarea class="form-input form-textarea" id="travelContent" placeholder="어떤 여행을 하셨나요? 맛있는 음식, 아름다운 풍경, 특별한 경험을 공유해주세요!"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">사진 추가 (선택사항)</label>
+                        <div class="photo-upload">
+                            <div class="photo-placeholder" onclick="addPhoto()">
+                                <span class="material-icons">add_photo_alternate</span>
+                            </div>
+                            <div class="photo-placeholder" onclick="addPhoto()">
+                                <span class="material-icons">add_photo_alternate</span>
+                            </div>
+                            <div class="photo-placeholder" onclick="addPhoto()">
+                                <span class="material-icons">add_photo_alternate</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">해시태그</label>
+                        <input type="text" class="form-input" id="travelTags" placeholder="#맛집 #여행 #지역화폐">
+                    </div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-secondary" onclick="closePaintModal()">취소</button>
+                    <button class="modal-btn modal-btn-primary" onclick="saveTravel()">색칠하고 기록 저장</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 잠긴 지역 모달 -->
+        <div id="lockedModal" class="paint-modal">
+            <div class="paint-modal-content">
+                <div class="paint-modal-header">
+                    <div class="paint-modal-icon">🔒</div>
+                    <h3 id="lockedRegionName">지역이 잠겨있습니다</h3>
+                    <p id="unlockCondition">이 지역을 색칠하려면 특정 조건을 달성해야 합니다.</p>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🎯</div>
+                    <h4 style="margin-bottom: 12px;">달성해야 할 조건</h4>
+                    <div id="conditionList" style="text-align: left; background: #f8f9fa; padding: 16px; border-radius: 12px;">
+                        <div style="margin-bottom: 8px;">✅ 해당 지역 방문하기</div>
+                        <div style="margin-bottom: 8px;">✅ 지역화폐로 결제하기</div>
+                        <div style="color: #e74c3c;">❌ 총 5만원 이상 사용하기 (현재: 3만원)</div>
+                    </div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-primary" onclick="closeLockedModal()" style="width: 100%;">확인</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 네비게이션 -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" data-screen="home-screen">
+                <div class="nav-icon">
+                    <span class="material-icons">home</span>
+                </div>
+                홈
+            </a>
+            <a href="#" class="nav-item" data-screen="wallet-screen">
+                <div class="nav-icon">
+                    <span class="material-icons">account_balance_wallet</span>
+                </div>
+                지갑
+            </a>
+            <div class="qr-nav-item">
+                <button class="qr-nav-btn" data-screen="qr-screen">
+                    <span class="material-icons">qr_code_scanner</span>
+                </button>
+                <div class="nav-label">QR결제</div>
+            </div>
+            <a href="#" class="nav-item" data-screen="map-screen">
+                <div class="nav-icon">
+                    <span class="material-icons">map</span>
+                </div>
+                지도
+            </a>
+            <a href="#" class="nav-item" data-screen="my-screen">
+                <div class="nav-icon">
+                    <span class="material-icons">person</span>
+                </div>
+                마이
+            </a>
+        </nav>
+    </div>
+
+
+
+    <script>
+
+        // AI 입력 엔터키 이벤트
+        document.querySelector('.ai-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleAIQuery();
+            }
+        });
+
+        // AI 전송 버튼 클릭
+        document.querySelector('.ai-send-btn').addEventListener('click', handleAIQuery);
+
+        function handleAIQuery() {
+            const input = document.querySelector('.ai-input');
+            const query = input.value.trim();
+            
+            if (query) {
+                // 실제 구현에서는 AI API 호출
+                console.log('AI Query:', query);
+                
+                // 입력창 비우기
+                input.value = '';
+                
+                // 로딩 애니메이션 등 추가 가능
+                showAIResponse(query);
+            }
+        }
+
+        function showAIResponse(query) {
+            // 임시 응답 표시 (실제로는 AI API 응답)
+            alert(`"${query}"에 대한 추천 결과를 준비중입니다!`);
+        }
+
+        // 페이지 로드 시 애니메이션
+        window.addEventListener('load', function() {
+            document.querySelectorAll('.fade-in').forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+
+        // 화면 전환 함수
+        function switchScreen(screenId) {
+            // 모든 화면 숨기기
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // 선택된 화면 보이기
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // 네비게이션 활성화 상태 변경 및 화면 전환
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 모든 네비게이션 아이템에서 active 클래스 제거
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                
+                // 클릭된 아이템에 active 클래스 추가
+                this.classList.add('active');
+                
+                // 화면 전환
+                const screenId = this.getAttribute('data-screen');
+                switchScreen(screenId);
+            });
+        });
+
+        // QR 결제 버튼 이벤트 추가
+        document.querySelector('.qr-nav-btn').addEventListener('click', function() {
+            // 모든 네비게이션 아이템에서 active 클래스 제거
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
+            });
+            
+            // QR 화면으로 전환
+            switchScreen('qr-screen');
+        });
+
+        // 잔액 카드 애니메이션
+        let balance = 847500;
+        function animateBalance() {
+            const balanceElement = document.querySelector('.balance-amount');
+            let current = 0;
+            const increment = balance / 50;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= balance) {
+                    current = balance;
+                    clearInterval(timer);
+                }
+                balanceElement.textContent = `₩${Math.floor(current).toLocaleString()}`;
+            }, 20);
+        }
+
+        // 페이지 로드 시 잔액 애니메이션 실행
+        setTimeout(animateBalance, 500);
+
+        // QR 결제 관련 기능들
+        
+        // 지역화폐 선택
+        document.querySelectorAll('.currency-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.currency-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+            });
+        });
+
+        // 빠른 금액 선택
+        document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const amount = this.getAttribute('data-amount');
+                document.getElementById('paymentAmount').value = parseInt(amount).toLocaleString();
+            });
+        });
+
+        // 금액 입력 포맷팅
+        document.getElementById('paymentAmount').addEventListener('input', function() {
+            let value = this.value.replace(/[^\d]/g, '');
+            if (value) {
+                this.value = parseInt(value).toLocaleString();
+            }
+        });
+
+        // 결제 처리 함수
+        function processPayment() {
+            const amount = document.getElementById('paymentAmount').value;
+            const selectedCurrency = document.querySelector('.currency-option.selected');
+            
+            if (!amount || amount === '0') {
+                alert('결제 금액을 입력해주세요.');
+                return;
+            }
+            
+            const currencyName = selectedCurrency.querySelector('div div').textContent;
+            
+            // 결제 처리 시뮬레이션
+            document.querySelector('.pay-button').textContent = '결제 중...';
+            document.querySelector('.pay-button').disabled = true;
+            
+            setTimeout(() => {
+                alert(`${currencyName}로 ${amount}원 결제가 완료되었습니다!`);
+                
+                // 홈 화면으로 돌아가기
+                switchScreen('home-screen');
+                document.querySelectorAll('.nav-item').forEach(nav => {
+                    nav.classList.remove('active');
+                });
+                document.querySelector('[data-screen="home-screen"]').classList.add('active');
+                
+                // 입력 필드 초기화
+                document.getElementById('paymentAmount').value = '';
+                document.querySelector('.pay-button').textContent = '결제하기';
+                document.querySelector('.pay-button').disabled = false;
+                
+                // 매장정보 숨기기
+                document.getElementById('merchantInfo').style.display = 'none';
+                
+                // QR 스캔 시뮬레이션 (5초 후 매장 정보 표시)
+                setTimeout(() => {
+                    if (document.getElementById('qr-screen').classList.contains('active')) {
+                        document.getElementById('merchantInfo').style.display = 'block';
+                    }
+                }, 5000);
+                
+            }, 2000);
+        }
+
+        // QR 스캔 시뮬레이션 - QR 화면 진입 시 자동으로 매장 정보 표시
+        function simulateQRScan() {
+            setTimeout(() => {
+                if (document.getElementById('qr-screen').classList.contains('active')) {
+                    document.getElementById('merchantInfo').style.display = 'block';
+                }
+            }, 3000); // 3초 후 QR 스캔 완료 시뮬레이션
+        }
+
+                 // QR 화면으로 전환 시 시뮬레이션 시작
+         const originalSwitchScreen = switchScreen;
+         switchScreen = function(screenId) {
+             originalSwitchScreen(screenId);
+             
+             if (screenId === 'qr-screen') {
+                 // 매장 정보 초기화
+                 document.getElementById('merchantInfo').style.display = 'none';
+                 // QR 스캔 시뮬레이션 시작
+                 simulateQRScan();
+             }
+         };
+
+         // 여행 지도 관련 기능들
+
+         // 지역 정보 데이터
+         const regionData = {
+             seoul: { name: '서울특별시', unlocked: true, colored: true },
+             gyeonggi: { name: '경기도', unlocked: true, colored: true },
+             busan: { name: '부산광역시', unlocked: true, colored: true },
+             gangwon: { name: '강원도', unlocked: true, colored: true },
+             daegu: { name: '대구광역시', unlocked: true, colored: false },
+             incheon: { name: '인천광역시', unlocked: true, colored: false },
+             gwangju: { name: '광주광역시', unlocked: true, colored: false },
+             daejeon: { name: '대전광역시', unlocked: true, colored: false },
+             ulsan: { name: '울산광역시', unlocked: true, colored: false },
+             chungbuk: { name: '충청북도', unlocked: false, colored: false },
+             chungnam: { name: '충청남도', unlocked: false, colored: false },
+             jeonbuk: { name: '전라북도', unlocked: false, colored: false },
+             jeonnam: { name: '전라남도', unlocked: false, colored: false },
+             gyeongbuk: { name: '경상북도', unlocked: false, colored: false },
+             gyeongnam: { name: '경상남도', unlocked: false, colored: false },
+             jeju: { name: '제주특별자치도', unlocked: false, colored: false },
+             sejong: { name: '세종특별자치시', unlocked: false, colored: false }
+         };
+
+         // 지역 클릭 이벤트
+         document.querySelectorAll('.region-area').forEach(region => {
+             region.addEventListener('click', function() {
+                 const regionId = this.getAttribute('data-region');
+                 const regionInfo = regionData[regionId];
+                 
+                 if (!regionInfo.unlocked) {
+                     // 잠긴 지역
+                     showLockedModal(regionInfo.name);
+                 } else if (!regionInfo.colored) {
+                     // 색칠 가능한 지역
+                     showPaintModal(regionInfo.name, regionId);
+                 } else {
+                     // 이미 색칠된 지역
+                     showTravelRecord(regionInfo.name, regionId);
+                 }
+             });
+         });
+
+         // 색칠하기 모달 표시
+         function showPaintModal(regionName, regionId) {
+             document.getElementById('modalRegionName').textContent = regionName + ' 색칠하기';
+             document.getElementById('paintModal').style.display = 'flex';
+             document.body.style.overflow = 'hidden';
+             
+             // 현재 선택된 지역 저장
+             window.currentRegion = regionId;
+         }
+
+         // 잠긴 지역 모달 표시
+         function showLockedModal(regionName) {
+             document.getElementById('lockedRegionName').textContent = regionName + ' 잠금 해제 필요';
+             document.getElementById('lockedModal').style.display = 'flex';
+             document.body.style.overflow = 'hidden';
+         }
+
+         // 여행 기록 보기 (이미 색칠된 지역)
+         function showTravelRecord(regionName, regionId) {
+             alert(`${regionName}의 여행 기록을 확인합니다!\n\n(여기에 상세 여행 기록 페이지를 구현할 수 있습니다)`);
+         }
+
+         // 모달 닫기 함수들
+         function closePaintModal() {
+             document.getElementById('paintModal').style.display = 'none';
+             document.body.style.overflow = 'auto';
+             
+             // 입력 필드 초기화
+             document.getElementById('travelTitle').value = '';
+             document.getElementById('travelContent').value = '';
+             document.getElementById('travelTags').value = '';
+         }
+
+         function closeLockedModal() {
+             document.getElementById('lockedModal').style.display = 'none';
+             document.body.style.overflow = 'auto';
+         }
+
+         // 사진 추가 함수
+         function addPhoto() {
+             alert('사진 업로드 기능입니다!\n\n실제 구현 시 카메라/갤러리 접근이 가능합니다.');
+         }
+
+         // 여행 기록 저장 및 색칠하기
+         function saveTravel() {
+             const title = document.getElementById('travelTitle').value;
+             const content = document.getElementById('travelContent').value;
+             const tags = document.getElementById('travelTags').value;
+             
+             if (!title.trim() || !content.trim()) {
+                 alert('여행 제목과 내용을 모두 입력해주세요!');
+                 return;
+             }
+             
+             // 지역 색칠하기
+             const regionElement = document.querySelector(`[data-region="${window.currentRegion}"]`);
+             regionElement.classList.remove('unlocked');
+             regionElement.classList.add('colored');
+             
+             // 데이터 업데이트
+             regionData[window.currentRegion].colored = true;
+             
+             // 통계 업데이트
+             updateStats();
+             
+             // 성공 메시지
+             alert(`🎉 ${regionData[window.currentRegion].name} 지역이 성공적으로 색칠되었습니다!\n\n여행 기록이 저장되었어요.`);
+             
+             // 모달 닫기
+             closePaintModal();
+         }
+
+         // 통계 업데이트
+         function updateStats() {
+             const coloredCount = Object.values(regionData).filter(region => region.colored).length;
+             const unlockedCount = Object.values(regionData).filter(region => region.unlocked && !region.colored).length;
+             const totalCount = Object.keys(regionData).length;
+             
+             document.querySelector('.stat-item:nth-child(1) .stat-number').textContent = coloredCount;
+             document.querySelector('.stat-item:nth-child(2) .stat-number').textContent = unlockedCount;
+             document.querySelector('.stat-item:nth-child(3) .stat-number').textContent = totalCount;
+         }
+
+         // 모달 외부 클릭 시 닫기
+         document.getElementById('paintModal').addEventListener('click', function(e) {
+             if (e.target === this) {
+                 closePaintModal();
+             }
+         });
+
+         document.getElementById('lockedModal').addEventListener('click', function(e) {
+             if (e.target === this) {
+                 closeLockedModal();
+             }
+         });
+
+         // 페이지 로드 시 통계 초기화
+         window.addEventListener('load', function() {
+             updateStats();
+         });
+    </script>
+</body>
+</html> 
