@@ -534,13 +534,13 @@
             margin-bottom: 4px;
         }
 
-        /* QR 중앙 버튼 스타일 */
-        .qr-nav-item {
+        /* AI 중앙 버튼 스타일 */
+        .ai-nav-item {
             position: relative;
             transform: translateY(-10px);
         }
 
-        .qr-nav-btn {
+        .ai-nav-btn {
             width: 56px;
             height: 56px;
             background: linear-gradient(135deg, #4A90E2, #357ABD);
@@ -557,12 +557,12 @@
             border: 3px solid white;
         }
 
-        .qr-nav-btn:hover {
+        .ai-nav-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 20px rgba(74, 144, 226, 0.6);
         }
 
-        .qr-nav-item .nav-label {
+        .ai-nav-item .nav-label {
             position: absolute;
             bottom: -20px;
             left: 50%;
@@ -570,6 +570,92 @@
             font-size: 12px;
             color: #6c757d;
             white-space: nowrap;
+        }
+
+        /* 플로팅 QR 버튼 */
+        .floating-qr-container {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .floating-qr-btn {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid white;
+        }
+
+        .floating-qr-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .floating-qr-btn:hover::before {
+            transform: translateX(100%);
+        }
+
+        .floating-qr-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 24px rgba(255, 107, 107, 0.4);
+        }
+
+        .floating-qr-btn:active {
+            transform: scale(0.95);
+        }
+
+        .qr-tooltip {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 8px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .floating-qr-container:hover .qr-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 반응형 - 모바일에서 QR 버튼 위치 조정 */
+        @media (max-width: 480px) {
+            .floating-qr-container {
+                bottom: 90px;
+                right: 16px;
+            }
+            
+            .floating-qr-btn {
+                width: 52px;
+                height: 52px;
+                font-size: 22px;
+            }
         }
 
         /* QR 스캔 화면 전용 스타일 */
@@ -1125,6 +1211,238 @@
             }
         }
 
+        /* 새로운 컴포넌트 스타일 */
+        .search-section {
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #4A90E2;
+        }
+
+        .search-btn {
+            padding: 12px;
+            background: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #357ABD;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-tab {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab.active {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .filter-tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .kakao-map-container {
+            margin-bottom: 20px;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .map-placeholder-content {
+            text-align: center;
+        }
+
+        .merchant-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .merchant-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #f1f3f4;
+            transition: all 0.2s;
+        }
+
+        .merchant-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-color: #4A90E2;
+        }
+
+        .merchant-icon {
+            width: 48px;
+            height: 48px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .merchant-info {
+            flex: 1;
+        }
+
+        .merchant-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .merchant-desc {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .merchant-tags {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 2px 8px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .merchant-distance {
+            font-size: 14px;
+            color: #4A90E2;
+            font-weight: 600;
+        }
+
+        .recommended-list {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .recommended-item {
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .recommended-image {
+            width: 80px;
+            height: 80px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 8px;
+        }
+
+        .recommended-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .recommended-rating {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .quick-question-btn {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-question-btn:hover {
+            background: #4A90E2;
+            color: white;
+            border-color: #4A90E2;
+        }
+
+        .visit-btn {
+            padding: 4px 8px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        .visit-btn:hover {
+            background: #218838;
+        }
+
+        .chat-item {
+            position: relative;
+        }
+
+        .chat-item[data-status="visited"] {
+            border-left: 4px solid #28a745;
+        }
+
+        .chat-item[data-status="pending"] {
+            border-left: 4px solid #ffc107;
+        }
+
         /* 애니메이션 */
         .fade-in {
             animation: fadeIn 0.5s ease-in;
@@ -1218,9 +1536,14 @@
                         </div>
                         대동여지도
                     </div>
-                    <button class="notification-btn">
-                        <span class="material-icons">notifications</span>
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="notification-btn" data-screen="my-screen" onclick="switchToMyPage()">
+                            <span class="material-icons">person</span>
+                        </button>
+                        <button class="notification-btn">
+                            <span class="material-icons">notifications</span>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="balance-card">
@@ -1471,7 +1794,7 @@
             </main>
         </div>
 
-        <!-- AI 가이드 화면 -->
+        <!-- AI 챗봇 화면 -->
         <div id="ai-screen" class="screen">
             <header class="header">
                 <div class="header-top">
@@ -1479,63 +1802,129 @@
                         <div class="logo-icon">
                             <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
                         </div>
-                        AI 가이드
+                        AI 여행 가이드
                     </div>
-                    <button class="notification-btn">
-                        <span class="material-icons">history</span>
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="notification-btn" data-screen="my-screen" onclick="switchToMyPage()">
+                            <span class="material-icons">person</span>
+                        </button>
+                        <button class="notification-btn" onclick="clearChatHistory()">
+                            <span class="material-icons">refresh</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">AI 추천 포인트</div>
+                    <div class="balance-amount">+2,500P</div>
+                    <div class="balance-actions">
+                        <button class="balance-btn">추천받기</button>
+                        <button class="balance-btn">방문인증</button>
+                        <button class="balance-btn">리워드</button>
+                    </div>
                 </div>
             </header>
 
             <main class="main-content">
+                <!-- 챗봇 입력 -->
                 <section class="ai-section fade-in" style="margin-bottom: 20px;">
                     <div class="ai-header">
                         <div class="ai-icon">🤖</div>
                         <div>
-                            <div class="ai-title">여행 가이드</div>
+                            <div class="ai-title">AI 여행 가이드</div>
                         </div>
                     </div>
-                    <div class="ai-subtitle">어디로 여행 가고 싶으신가요?</div>
+                    <div class="ai-subtitle">어디로 여행 가고 싶으신가요? 맞춤 추천을 받아보세요!</div>
                     <div class="ai-input-container">
-                        <input type="text" class="ai-input" placeholder="예: 춘천 닭갈비 맛집 추천해줘">
-                        <button class="ai-send-btn">
+                        <input type="text" class="ai-input" id="aiChatInput" placeholder="예: 춘천 닭갈비 맛집 추천해줘">
+                        <button class="ai-send-btn" onclick="sendChatMessage()">
                             <span class="material-icons">send</span>
                         </button>
                     </div>
                 </section>
 
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon">💬</div>
-                        <div class="activity-info">
-                            <div class="activity-title">춘천 닭갈비 맛집 추천</div>
-                            <div class="activity-desc">5개 맛집과 지역화폐 사용처 안내</div>
-                        </div>
-                        <div style="color: #4A90E2; font-size: 12px;">완료</div>
+                <!-- 리워드 미션 -->
+                <section class="mission-section">
+                    <div class="section-header">
+                        <h2 class="section-title">추천 방문 미션</h2>
+                        <a href="#" class="view-all-btn">전체보기</a>
                     </div>
                     
-                    <div class="activity-item">
-                        <div class="activity-icon">🗺️</div>
-                        <div class="activity-info">
-                            <div class="activity-title">부산 해운대 관광 코스</div>
-                            <div class="activity-desc">1박 2일 여행 일정과 할인 혜택</div>
+                    <div class="mission-card">
+                        <div class="mission-title">🎯 AI 추천 장소 방문하기</div>
+                        <div class="mission-desc">챗봇이 추천한 장소를 실제 방문하고 인증하면 포인트 적립!</div>
+                        <div class="mission-progress">
+                            <div class="mission-progress-fill" style="width: 40%;"></div>
                         </div>
-                        <div style="color: #4A90E2; font-size: 12px;">완료</div>
+                        <div class="mission-reward">진행률 40% • 다음 방문 시 +500P</div>
+                    </div>
+                </section>
+
+                <!-- 채팅 기록 -->
+                <section class="local-currency-section">
+                    <div class="section-header">
+                        <h2 class="section-title">채팅 기록</h2>
+                        <a href="#" class="view-all-btn">전체보기</a>
                     </div>
                     
-                    <div class="activity-item">
-                        <div class="activity-icon">🎯</div>
-                        <div class="activity-info">
-                            <div class="activity-title">미션 추천</div>
-                            <div class="activity-desc">오늘의 맞춤 미션과 리워드</div>
+                    <div id="chatHistory" class="activity-list">
+                        <div class="activity-item chat-item" data-status="visited">
+                            <div class="activity-icon">🍗</div>
+                            <div class="activity-info">
+                                <div class="activity-title">춘천 닭갈비 맛집 추천</div>
+                                <div class="activity-desc">춘천명동닭갈비, 숯불닭갈비 등 5곳 추천 • 방문 완료</div>
+                            </div>
+                            <div style="color: #28a745; font-size: 12px; display: flex; flex-direction: column; align-items: center;">
+                                <span>✓ 방문완료</span>
+                                <span style="color: #4A90E2;">+500P</span>
+                            </div>
                         </div>
-                        <div style="color: #28a745; font-size: 12px;">새로움</div>
+                        
+                        <div class="activity-item chat-item" data-status="pending">
+                            <div class="activity-icon">🌊</div>
+                            <div class="activity-info">
+                                <div class="activity-title">부산 해운대 관광 코스</div>
+                                <div class="activity-desc">해운대 해수욕장, 동백섬 등 추천 • 방문 대기</div>
+                            </div>
+                            <div style="color: #ff6b6b; font-size: 12px; display: flex; flex-direction: column; align-items: center;">
+                                <span>방문대기</span>
+                                <button class="visit-btn" onclick="visitPlace('busan')">방문인증</button>
+                            </div>
+                        </div>
+                        
+                        <div class="activity-item chat-item" data-status="pending">
+                            <div class="activity-icon">☕</div>
+                            <div class="activity-info">
+                                <div class="activity-title">강릉 커피거리 탐방</div>
+                                <div class="activity-desc">안목해변 커피거리, 테라로사 등 추천</div>
+                            </div>
+                            <div style="color: #ff6b6b; font-size: 12px; display: flex; flex-direction: column; align-items: center;">
+                                <span>방문대기</span>
+                                <button class="visit-btn" onclick="visitPlace('gangneung')">방문인증</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </section>
+
+                <!-- 빠른 질문 -->
+                <section style="margin-bottom: 20px;">
+                    <div class="section-header">
+                        <h2 class="section-title">빠른 질문</h2>
+                    </div>
+                    
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button class="quick-question-btn" onclick="quickQuestion('서울 맛집 추천')">서울 맛집 추천</button>
+                        <button class="quick-question-btn" onclick="quickQuestion('부산 관광지')">부산 관광지</button>
+                        <button class="quick-question-btn" onclick="quickQuestion('제주도 여행코스')">제주도 여행코스</button>
+                        <button class="quick-question-btn" onclick="quickQuestion('강원도 맛집')">강원도 맛집</button>
+                        <button class="quick-question-btn" onclick="quickQuestion('경주 역사탐방')">경주 역사탐방</button>
+                        <button class="quick-question-btn" onclick="quickQuestion('전주 한옥마을')">전주 한옥마을</button>
+                    </div>
+                </section>
             </main>
         </div>
 
-        <!-- 여행 지도 화면 -->
+        <!-- 가맹점 지도 화면 -->
         <div id="map-screen" class="screen">
             <header class="header">
                 <div class="header-top">
@@ -1543,11 +1932,195 @@
                         <div class="logo-icon">
                             <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
                         </div>
-                        나의 여행지도
+                        가맹점 지도
                     </div>
-                    <button class="notification-btn">
-                        <span class="material-icons">info</span>
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="notification-btn" data-screen="my-screen" onclick="switchToMyPage()">
+                            <span class="material-icons">person</span>
+                        </button>
+                        <button class="notification-btn" onclick="toggleMapFilter()">
+                            <span class="material-icons">filter_list</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="balance-card">
+                    <div class="balance-label">내 주변 가맹점</div>
+                    <div class="balance-amount">127개</div>
+                    <div class="balance-actions">
+                        <button class="balance-btn">맛집</button>
+                        <button class="balance-btn">카페</button>
+                        <button class="balance-btn">쇼핑</button>
+                    </div>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <!-- 검색 및 필터 -->
+                <section class="search-section">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="가맹점 이름, 업종 검색...">
+                        <button class="search-btn">
+                            <span class="material-icons">search</span>
+                        </button>
+                    </div>
+                    
+                    <div class="filter-tabs">
+                        <button class="filter-tab active">전체</button>
+                        <button class="filter-tab">맛집</button>
+                        <button class="filter-tab">카페</button>
+                        <button class="filter-tab">쇼핑</button>
+                        <button class="filter-tab">편의점</button>
+                    </div>
+                </section>
+
+                <!-- 지도 영역 -->
+                <section class="map-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 class="section-title">내 위치 주변</h2>
+                        <div style="font-size: 12px; color: #666;">
+                            📍 서울시 강남구 역삼동
+                        </div>
+                    </div>
+                    
+                    <div class="kakao-map-container">
+                        <div class="map-placeholder">
+                            <div class="map-placeholder-content">
+                                <span class="material-icons" style="font-size: 48px; color: #ccc;">map</span>
+                                <p style="color: #999; margin: 10px 0;">카카오맵 API 연동 예정</p>
+                                <p style="color: #666; font-size: 12px;">현재는 목업 가맹점 리스트를 표시합니다</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 주변 가맹점 리스트 -->
+                <section class="merchant-section">
+                    <div class="section-header">
+                        <h2 class="section-title">주변 가맹점</h2>
+                        <a href="#" class="view-all-btn">지도보기</a>
+                    </div>
+                    
+                    <div class="merchant-list">
+                        <div class="merchant-item">
+                            <div class="merchant-icon">🍗</div>
+                            <div class="merchant-info">
+                                <div class="merchant-name">춘천닭갈비 역삼점</div>
+                                <div class="merchant-desc">한식 • 도보 3분 • 서울사랑상품권 사용가능</div>
+                                <div class="merchant-tags">
+                                    <span class="tag">할인 5%</span>
+                                    <span class="tag">적립 1%</span>
+                                </div>
+                            </div>
+                            <div class="merchant-distance">120m</div>
+                        </div>
+                        
+                        <div class="merchant-item">
+                            <div class="merchant-icon">☕</div>
+                            <div class="merchant-info">
+                                <div class="merchant-name">스타벅스 테헤란로점</div>
+                                <div class="merchant-desc">카페 • 도보 5분 • 경기지역화폐 사용가능</div>
+                                <div class="merchant-tags">
+                                    <span class="tag">적립 2%</span>
+                                </div>
+                            </div>
+                            <div class="merchant-distance">200m</div>
+                        </div>
+                        
+                        <div class="merchant-item">
+                            <div class="merchant-icon">🛒</div>
+                            <div class="merchant-info">
+                                <div class="merchant-name">이마트 역삼점</div>
+                                <div class="merchant-desc">대형마트 • 도보 8분 • 모든 지역화폐 사용가능</div>
+                                <div class="merchant-tags">
+                                    <span class="tag">할인 3%</span>
+                                    <span class="tag">적립 1%</span>
+                                    <span class="tag">추천</span>
+                                </div>
+                            </div>
+                            <div class="merchant-distance">350m</div>
+                        </div>
+                        
+                        <div class="merchant-item">
+                            <div class="merchant-icon">🍕</div>
+                            <div class="merchant-info">
+                                <div class="merchant-name">도미노피자 강남점</div>
+                                <div class="merchant-desc">양식 • 도보 10분 • 부산화폐 사용가능</div>
+                                <div class="merchant-tags">
+                                    <span class="tag">배달가능</span>
+                                </div>
+                            </div>
+                            <div class="merchant-distance">450m</div>
+                        </div>
+                        
+                        <div class="merchant-item">
+                            <div class="merchant-icon">💊</div>
+                            <div class="merchant-info">
+                                <div class="merchant-name">온누리약국</div>
+                                <div class="merchant-desc">약국 • 도보 2분 • 서울사랑상품권 사용가능</div>
+                                <div class="merchant-tags">
+                                    <span class="tag">24시간</span>
+                                </div>
+                            </div>
+                            <div class="merchant-distance">80m</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 추천 가맹점 -->
+                <section class="recommended-section">
+                    <div class="section-header">
+                        <h2 class="section-title">AI 추천 가맹점</h2>
+                        <a href="#" class="view-all-btn">더보기</a>
+                    </div>
+                    
+                    <div class="recommended-list">
+                        <div class="recommended-item">
+                            <div class="recommended-image">🥘</div>
+                            <div class="recommended-info">
+                                <div class="recommended-name">맛있는집 본점</div>
+                                <div class="recommended-rating">⭐ 4.7 (234)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="recommended-item">
+                            <div class="recommended-image">🍰</div>
+                            <div class="recommended-info">
+                                <div class="recommended-name">달콤카페</div>
+                                <div class="recommended-rating">⭐ 4.5 (189)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="recommended-item">
+                            <div class="recommended-image">🥙</div>
+                            <div class="recommended-info">
+                                <div class="recommended-name">터키쉬딜라이트</div>
+                                <div class="recommended-rating">⭐ 4.8 (92)</div>
+                            </div>
+                        </div>
+                    </div>
+                                </section>
+             </main>
+         </div>
+
+        <!-- 여행 미션 화면 -->
+        <div id="mission-screen" class="screen">
+            <header class="header">
+                <div class="header-top">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <img src="logo.png" alt="대동여지도 로고" onerror="this.parentElement.innerHTML='🗺️'">
+                        </div>
+                        여행 미션
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="notification-btn" data-screen="my-screen" onclick="switchToMyPage()">
+                            <span class="material-icons">person</span>
+                        </button>
+                        <button class="notification-btn">
+                            <span class="material-icons">info</span>
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="balance-card">
@@ -1739,7 +2312,7 @@
                     </div>
                 </section>
             </main>
-        </div>
+         </div>
 
         <!-- 마이 화면 -->
         <div id="my-screen" class="screen">
@@ -2014,11 +2587,11 @@
                 </div>
                 지갑
             </a>
-            <div class="qr-nav-item">
-                <button class="qr-nav-btn" data-screen="qr-screen">
-                    <span class="material-icons">qr_code_scanner</span>
+            <div class="ai-nav-item">
+                <button class="ai-nav-btn" data-screen="ai-screen">
+                    <span class="material-icons">smart_toy</span>
                 </button>
-                <div class="nav-label">QR결제</div>
+                <div class="nav-label">AI가이드</div>
             </div>
             <a href="#" class="nav-item" data-screen="map-screen">
                 <div class="nav-icon">
@@ -2026,13 +2599,21 @@
                 </div>
                 지도
             </a>
-            <a href="#" class="nav-item" data-screen="my-screen">
+            <a href="#" class="nav-item" data-screen="mission-screen">
                 <div class="nav-icon">
-                    <span class="material-icons">person</span>
+                    <span class="material-icons">flag</span>
                 </div>
-                마이
+                미션
             </a>
         </nav>
+
+        <!-- 플로팅 QR 버튼 -->
+        <div class="floating-qr-container">
+            <button class="floating-qr-btn" data-screen="qr-screen" onclick="switchScreen('qr-screen')">
+                <span class="material-icons">qr_code_scanner</span>
+            </button>
+            <div class="qr-tooltip">QR결제</div>
+        </div>
     </div>
 
 
@@ -2107,15 +2688,15 @@
             });
         });
 
-        // QR 결제 버튼 이벤트 추가
-        document.querySelector('.qr-nav-btn').addEventListener('click', function() {
+        // AI 챗봇 버튼 이벤트 추가
+        document.querySelector('.ai-nav-btn').addEventListener('click', function() {
             // 모든 네비게이션 아이템에서 active 클래스 제거
             document.querySelectorAll('.nav-item').forEach(nav => {
                 nav.classList.remove('active');
             });
             
-            // QR 화면으로 전환
-            switchScreen('qr-screen');
+            // AI 화면으로 전환
+            switchScreen('ai-screen');
         });
 
         // 잔액 카드 애니메이션
@@ -2373,6 +2954,124 @@
          // 페이지 로드 시 통계 초기화
          window.addEventListener('load', function() {
              updateStats();
+         });
+
+         // 새로운 기능들
+
+         // 마이페이지로 이동
+         function switchToMyPage() {
+             switchScreen('my-screen');
+         }
+
+         // AI 챗봇 기능
+         function sendChatMessage() {
+             const input = document.getElementById('aiChatInput');
+             const message = input.value.trim();
+             
+             if (!message) return;
+             
+             // 메시지 추가 (간단한 시뮬레이션)
+             addChatMessage(message);
+             input.value = '';
+             
+             // AI 응답 시뮬레이션
+             setTimeout(() => {
+                 addAIResponse(message);
+             }, 1000);
+         }
+
+         function addChatMessage(message) {
+             const chatHistory = document.getElementById('chatHistory');
+             const newChat = document.createElement('div');
+             newChat.className = 'activity-item chat-item';
+             newChat.setAttribute('data-status', 'pending');
+             
+             const region = getRegionFromMessage(message);
+             newChat.innerHTML = `
+                 <div class="activity-icon">${region.icon}</div>
+                 <div class="activity-info">
+                     <div class="activity-title">${region.title}</div>
+                     <div class="activity-desc">${region.desc}</div>
+                 </div>
+                 <div style="color: #ff6b6b; font-size: 12px; display: flex; flex-direction: column; align-items: center;">
+                     <span>방문대기</span>
+                     <button class="visit-btn" onclick="visitPlace('${region.code}')">방문인증</button>
+                 </div>
+             `;
+             
+             chatHistory.insertBefore(newChat, chatHistory.firstChild);
+         }
+
+         function addAIResponse(message) {
+             // AI 응답 처리 로직
+             console.log('AI 응답:', message);
+         }
+
+         function getRegionFromMessage(message) {
+             if (message.includes('서울')) {
+                 return { icon: '🏙️', title: '서울 맛집 탐방', desc: '명동, 강남 등 추천 맛집', code: 'seoul' };
+             } else if (message.includes('부산')) {
+                 return { icon: '🌊', title: '부산 해변 여행', desc: '해운대, 광안리 등 추천', code: 'busan' };
+             } else if (message.includes('제주')) {
+                 return { icon: '🏝️', title: '제주도 자연 탐방', desc: '한라산, 성산일출봉 등', code: 'jeju' };
+             } else {
+                 return { icon: '🎯', title: '맞춤 여행 추천', desc: 'AI가 분석한 최적 코스', code: 'custom' };
+             }
+         }
+
+         function quickQuestion(question) {
+             document.getElementById('aiChatInput').value = question;
+             sendChatMessage();
+         }
+
+         function visitPlace(place) {
+             // 방문 인증 시뮬레이션
+             const modal = document.createElement('div');
+             modal.className = 'modal';
+             modal.style.display = 'flex';
+             modal.innerHTML = `
+                 <div class="modal-content">
+                     <div class="modal-icon">📍</div>
+                     <div class="modal-title">방문 인증 완료!</div>
+                     <div class="modal-desc">${place} 지역 방문이 인증되었습니다.<br/>+500P가 적립되었습니다.</div>
+                     <button class="modal-btn" onclick="this.parentElement.parentElement.remove()">확인</button>
+                 </div>
+             `;
+             document.body.appendChild(modal);
+             
+             // 포인트 업데이트
+             updateAIPoints(500);
+         }
+
+         function updateAIPoints(points) {
+             const currentPoints = document.querySelector('#ai-screen .balance-amount');
+             if (currentPoints) {
+                 const current = parseInt(currentPoints.textContent.replace(/[^0-9]/g, '')) || 2500;
+                 currentPoints.textContent = `+${(current + points).toLocaleString()}P`;
+             }
+         }
+
+         function clearChatHistory() {
+             const chatHistory = document.getElementById('chatHistory');
+             const userChats = chatHistory.querySelectorAll('.chat-item[data-status="pending"]');
+             userChats.forEach(chat => chat.remove());
+         }
+
+         function toggleMapFilter() {
+             // 필터 토글 기능
+             console.log('지도 필터 토글');
+         }
+
+         // 엔터키 이벤트
+         document.addEventListener('DOMContentLoaded', function() {
+             const aiInput = document.getElementById('aiChatInput');
+             if (aiInput) {
+                 aiInput.addEventListener('keypress', function(e) {
+                     if (e.key === 'Enter') {
+                         sendChatMessage();
+                     }
+                 });
+             }
          });
     </script>
 </body>
